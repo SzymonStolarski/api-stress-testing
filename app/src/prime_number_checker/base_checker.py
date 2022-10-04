@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 class BaseChecker:
     MAX_RANGE = 9223372036854775807
 
-    def __init__(self) -> None:
+    def __init__(self):
         pass
 
     @abstractmethod

@@ -1,5 +1,3 @@
-from random import randint
-
 from src.prime_number_checker.base_checker import BaseChecker
 
 
