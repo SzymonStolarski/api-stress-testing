@@ -22,7 +22,14 @@ def read_root():
 
 @app.get("/prime/{number}")
 def prime(number: int):
-    return {'result': prime_checker.check(number)}
+
+    try:
+        return {'result': prime_checker.check(number)}
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="Wrong number passed!"
+        )
 
 
 @app.post("/picture/invert/")
