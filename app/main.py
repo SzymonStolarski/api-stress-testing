@@ -1,6 +1,6 @@
 import io
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, HTTPException
 
 from src.prime_number_checker.default_checker import DefaultChecker
 from src.image_inverter.pillow_inverter import PillowInverter
@@ -19,7 +19,14 @@ def read_root():
 
 @app.get("/prime/{number}")
 def prime(number: int):
-    return {'result': prime_checker.check(number)}
+
+    try:
+        return {'result': prime_checker.check(number)}
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="Wrong number passed!"
+        )
 
 
 @app.post("/picture/invert/")
