@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 
 # In the deployed app to be passed as environemntal variables :D
+# This approach for testing only :)
 SECRET_KEY = "5cd4b99178b3ba30e00c33496599954825b365a4ade55bd37ecceabaffbfdee1"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
