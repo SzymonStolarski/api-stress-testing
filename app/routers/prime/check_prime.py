@@ -1,16 +1,36 @@
-from fastapi import APIRouter, HTTPException
+from abc import ABC, abstractmethod
 
+from fastapi import APIRouter, HTTPException
+import sympy
+
+
+MAX_RANGE = 9223372036854775807
 
 router = APIRouter()
 
 
-class DefaultChecker:
-
-    MAX_RANGE = 9223372036854775807
+class Checker(ABC):
 
     def __init__(self) -> None:
         """Empty constructor"""
         pass
+
+    @abstractmethod
+    def check(self, number_to_check: int) -> bool:
+        pass
+
+    def _validation(self, number_to_validate: int):
+        if (number_to_validate > MAX_RANGE
+                or number_to_validate < 0):
+
+            raise ValueError(f"Range of input number should be positive and in"
+                             f" max range of: {MAX_RANGE}")
+
+
+class DefaultChecker(Checker):
+
+    def __init__(self) -> None:
+        super().__init__()
 
     def check(self, number_to_check: int) -> bool:
         self._validation(number_to_validate=number_to_check)
@@ -38,15 +58,19 @@ class DefaultChecker:
         # then n is a prime number
         return True
 
-    def _validation(self, number_to_validate: int):
-        if (number_to_validate > DefaultChecker.MAX_RANGE
-                or number_to_validate < 0):
 
-            raise ValueError(f"Range of input number should be positive and in"
-                             f" max range of: {DefaultChecker.MAX_RANGE}")
+class SympyChecker(Checker):
+
+    def __init__(self) -> None:
+        super().__init__()
+
+    def check(self, number_to_check: int) -> bool:
+        self._validation(number_to_validate=number_to_check)
+
+        return sympy.isprime(number_to_check)
 
 
-prime_checker = DefaultChecker()
+prime_checker = SympyChecker()
 
 
 @router.get("/prime/{number}")
