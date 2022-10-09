@@ -1,9 +1,16 @@
-from src.prime_number_checker.base_checker import BaseChecker
+from fastapi import APIRouter, HTTPException
 
 
-class DefaultChecker(BaseChecker):
+router = APIRouter()
+
+
+class DefaultChecker:
+
+    MAX_RANGE = 9223372036854775807
+
     def __init__(self) -> None:
-        super().__init__()
+        """Empty constructor"""
+        pass
 
     def check(self, number_to_check: int) -> bool:
         self._validation(number_to_validate=number_to_check)
@@ -30,3 +37,25 @@ class DefaultChecker(BaseChecker):
         # If we did not find any factor in the above loop,
         # then n is a prime number
         return True
+
+    def _validation(self, number_to_validate: int):
+        if (number_to_validate > DefaultChecker.MAX_RANGE
+                or number_to_validate < 0):
+
+            raise ValueError(f"Range of input number should be positive and in"
+                             f" max range of: {DefaultChecker.MAX_RANGE}")
+
+
+prime_checker = DefaultChecker()
+
+
+@router.get("/prime/{number}")
+def check_prime(number: int):
+
+    try:
+        return {'result': prime_checker.check(number)}
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="Wrong number passed!"
+        )
