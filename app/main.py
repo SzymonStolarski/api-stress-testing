@@ -1,15 +1,20 @@
-import io
+from fastapi import FastAPI
 
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from routers.auth import token
+from routers.picture import invert
+from routers.prime import check_prime
+from routers.time import get
 
-from src.prime_number_checker.default_checker import DefaultChecker
-from src.image_inverter.pillow_inverter import PillowInverter
+
+APP_VERSION = 'v1'
 
 
 app = FastAPI()
 
-prime_checker = DefaultChecker()
-img_inverter = PillowInverter()
+app.include_router(token.router)
+app.include_router(invert.router)
+app.include_router(check_prime.router)
+app.include_router(get.router)
 
 
 @app.get("/")
@@ -17,22 +22,4 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/prime/{number}")
-def prime(number: int):
-
-    try:
-        return {'result': prime_checker.check(number)}
-    except ValueError:
-        raise HTTPException(
-            status_code=400,
-            detail="Wrong number passed!"
-        )
-
-
-@app.post("/picture/invert/")
-async def picture_invert(file: UploadFile = File(...)):
-
-    img_data = await file.read()
-    inverted_image = img_inverter.invert(img_data)
-
-    return {'picture_name': file.filename}
+app.mount(f"/api/{APP_VERSION}", app)
