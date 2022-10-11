@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: app
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/app
+    ports:
+      - 8000:8000
+    environment:
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+      ALGORITHM: HS256
+      SECRET_KEY: 5cd4b99178b3ba30e00c33496599954825b365a4ade55bd37ecceabaffbfdee1
+      PORT: 8000
