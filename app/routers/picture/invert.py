@@ -1,6 +1,7 @@
 import io
 
 from fastapi import APIRouter, File, UploadFile
+from fastapi.responses import Response
 from PIL import Image, ImageOps
 
 
@@ -28,5 +29,7 @@ async def picture_invert(file: UploadFile = File(...)):
 
     img_data = await file.read()
     inverted_image = img_inverter.invert(img_data)
+    inv_image_bytes = io.BytesIO()
+    inverted_image.save(inv_image_bytes, format='PNG')
 
-    return {'picture_name': file.filename}
+    return Response(content=inv_image_bytes.getvalue(), media_type='image/png')
